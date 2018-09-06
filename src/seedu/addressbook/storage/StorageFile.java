@@ -2,6 +2,7 @@ package seedu.addressbook.storage;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -77,9 +78,12 @@ public class StorageFile {
         try {
             List<String> encodedAddressBook = AddressBookEncoder.encodeAddressBook(addressBook);
             Files.write(path, encodedAddressBook);
+        } catch (AccessDeniedException adex) {
+            throw new StorageOperationException("The storage file " + path + " is read only. " +
+                    "Please change the access right and try again.");
         } catch (IOException ioe) {
             throw new StorageOperationException("Error writing to file: " + path);
-        }
+        } 
     }
 
     /**
